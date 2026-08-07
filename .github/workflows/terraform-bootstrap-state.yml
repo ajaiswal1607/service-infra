@@ -20,7 +20,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: infrastructure/bootstrap-state
+        working-directory: common/bootstrap-state
 
     steps:
 
