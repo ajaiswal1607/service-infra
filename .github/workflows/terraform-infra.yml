@@ -1,0 +1,96 @@
+name: Terraform Infrastructure CI/CD
+
+on:
+  pull_request:
+    paths:
+      - "infrastructure/**"
+      - "environments/**"
+      - ".github/workflows/terraform-infra.yml"
+
+  push:
+    branches:
+      - main
+    paths:
+      - "infrastructure/**"
+      - "environments/**"
+      - ".github/workflows/terraform-infra.yml"
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy"
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+          - prod
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform:
+    name: Terraform ${{ inputs.environment || 'dev' }}
+    runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ inputs.environment || 'dev' }}
+
+    env:
+      ENVIRONMENT: ${{ inputs.environment || 'dev' }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+      TERRAFORM_ROLE_ARN: ${{ vars.TERRAFORM_ROLE_ARN }}
+
+    defaults:
+      run:
+        working-directory: infrastructure/terraform
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.TERRAFORM_ROLE_ARN }}
+          role-session-name: terraform-${{ env.ENVIRONMENT }}-${{ github.run_id }}
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init
+        env:
+          TF_STATE_KEY: ${{ env.ENVIRONMENT }}/terraform.tfstate
+        run: |
+          terraform init \
+            -backend-config="bucket=${TF_STATE_BUCKET}" \
+            -backend-config="key=${TF_STATE_KEY}" \
+            -backend-config="region=${AWS_REGION}" \
+            -backend-config="use_lockfile=true"
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: |
+          terraform plan \
+            -var-file="../../environments/${ENVIRONMENT}/terraform.tfvars" \
+            -out=tfplan
+
+      - name: Terraform Apply
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: terraform apply -auto-approve tfplan
+
+      - name: Terraform Outputs
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: terraform output

@@ -1,0 +1,69 @@
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# JetBrains IDEs / VS Code
+.idea/
+.vscode/
+*.iml
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+crash.log
+crash.*
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+*.tfvars
+*.tfvars.json
+# Note: commit .terraform.lock.hcl for reproducible provider selection
+# .terraform.lock.hcl
+
+# Terraform legacy/state lock files
+.terraform.tfstate.lock.info
+
+# Sensitive / secret files
+*.pem
+*.key
+*.p12
+*.jks
+*.crt
+*.csr
+*.der
+.env
+.env.local
+.env.*.local
+secrets.tfvars
+
+# AWS
+.aws/
+credentials
+
+# Kubernetes
+.kube/
+
+# Logs
+*.log
+
+# Node / build
+node_modules/
+dist/
+build/
+coverage/
+
+# Editor temporary files
+*~
+*.swp
+*.swo
+
+# Misc
+*.bak
+
+# If you want to keep example or sample tfvars files, name them with a .example suffix
+# e.g. terraform.tfvars.example
+
