@@ -20,7 +20,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: infrastructure/bootstrap-state
+        working-directory: common/bootstrap-state
 
     steps:
 
@@ -36,8 +36,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ env.BOOTSTRAP_ROLE_ARN }}
-          role-session-name: terraform-bootstrap-${{ github.run_id }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Terraform Init
         run: terraform init
