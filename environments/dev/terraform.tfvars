@@ -1,5 +1,5 @@
 aws_region = "ap-south-1"
-project_name = "enterprise-eks"
+project_name = "anand-app"
 environment = "dev"
 vpc_cidr = "10.20.0.0/16"
 az_count = 2
