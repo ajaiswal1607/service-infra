@@ -1,0 +1,107 @@
+name: Destroy AWS Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_destroy:
+        description: 'Type DESTROY to confirm deletion of all AWS resources'
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-south-1
+
+jobs:
+  destroy:
+    name: Destroy EKS Infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate destroy confirmation
+        run: |
+          if [ "${{ github.event.inputs.confirm_destroy }}" != "DESTROY" ]; then
+            echo "ERROR: You must type DESTROY to continue."
+            exit 1
+          fi
+
+          echo "Destroy confirmation accepted."
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # ------------------------------------------
+      # Configure kubectl
+      # ------------------------------------------
+      - name: Configure kubectl
+        working-directory: common/terraform
+        run: |
+          CLUSTER_NAME=$(terraform output -raw eks_cluster_name)
+
+          aws eks update-kubeconfig \
+            --region "$AWS_REGION" \
+            --name "$CLUSTER_NAME"
+
+          kubectl get nodes
+
+      # ------------------------------------------
+      # Delete Kubernetes applications first
+      # ------------------------------------------
+      - name: Delete Kubernetes resources
+        run: |
+          echo "Deleting Kubernetes applications..."
+
+          kubectl delete all \
+            --all \
+            --all-namespaces \
+            --ignore-not-found=true
+
+      # ------------------------------------------
+      # Delete EKS infrastructure
+      # ------------------------------------------
+      - name: Terraform Init - EKS
+        working-directory: common/terraform
+        run: |
+          terraform init
+
+      - name: Terraform Destroy - EKS
+        working-directory: common/terraform
+        run: |
+          terraform destroy \
+            -auto-approve
+
+      # ------------------------------------------
+      # Delete Terraform backend
+      # ------------------------------------------
+      - name: Terraform Init - Bootstrap State
+        working-directory: common/bootstrap-state
+        run: |
+          terraform init
+
+      - name: Terraform Destroy - Bootstrap State
+        working-directory: common/bootstrap-state
+        run: |
+          terraform destroy \
+            -auto-approve
+
+      # ------------------------------------------
+      # Completion
+      # ------------------------------------------
+      - name: Destroy completed
+        run: |
+          echo "======================================"
+          echo "AWS infrastructure destroyed."
+          echo "======================================"

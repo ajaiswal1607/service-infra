@@ -5,7 +5,7 @@ on:
     paths:
       - "infrastructure/**"
       - "environments/**"
-      - ".github/workflows/terraform-infra.yml"
+      - ".github/workflows/infra-setup.yml"
 
   push:
     branches:
@@ -13,7 +13,7 @@ on:
     paths:
       - "infrastructure/**"
       - "environments/**"
-      - ".github/workflows/terraform-infra.yml"
+      - ".github/workflows/infra-setup.yml"
 
   workflow_dispatch:
     inputs:
@@ -62,8 +62,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ env.TERRAFORM_ROLE_ARN }}
-          role-session-name: terraform-${{ env.ENVIRONMENT }}-${{ github.run_id }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Terraform Format Check
         run: terraform fmt -check -recursive

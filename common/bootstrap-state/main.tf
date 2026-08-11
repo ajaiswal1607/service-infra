@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "${var.project_name}-terraform-state"
+  bucket = "${var.project_name}-${var.environment}-terraform-state"
 }
 
 resource "aws_s3_bucket_versioning" "terraform_state" {
@@ -27,7 +27,7 @@ resource "aws_s3_bucket_public_access_block" "terraform_state" {
 }
 
 resource "aws_iam_role" "github_terraform" {
-  name = "anand-app-dev-github-terraform"
+  name = "${var.project_name}-${var.environment}-github-terraform"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
