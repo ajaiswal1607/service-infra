@@ -170,9 +170,7 @@ resource "kubernetes_deployment" "chromadb" {
           name = "chromadb-data"
 
           persistent_volume_claim {
-
-            claim_name =
-            kubernetes_persistent_volume_claim.chromadb.metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim.chromadb.metadata[0].name
           }
         }
       }
@@ -184,10 +182,8 @@ resource "kubernetes_service" "chromadb" {
 
   metadata {
 
-    name = "chromadb"
-
-    namespace =
-    kubernetes_namespace.chromadb.metadata[0].name
+    name      = "chromadb"
+    namespace = kubernetes_namespace.chromadb.metadata[0].name
   }
 
   spec {
