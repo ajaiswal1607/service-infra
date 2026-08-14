@@ -53,7 +53,7 @@ jobs:
       # Configure kubectl
       # ------------------------------------------
       - name: Terraform Init - EKS
-        working-directory: common/terraform
+        working-directory: common/bootstrap-state
         run: |
           terraform init
 
