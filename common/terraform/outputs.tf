@@ -17,3 +17,17 @@ output "github_terraform_role_arn" {
 output "vpc_id" {
   value = aws_vpc.main.id
 }
+
+output "chromadb_namespace" {
+  value = module.chromadb.namespace
+}
+
+
+output "chromadb_service" {
+  value = module.chromadb.service_name
+}
+
+
+output "chromadb_url" {
+  value = module.chromadb.internal_url
+}
