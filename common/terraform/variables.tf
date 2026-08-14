@@ -55,3 +55,61 @@ variable "github_org" {
 variable "github_repo" {
   type = string
 }
+
+variable "eks_cluster_name" {
+  type = string
+  default = ""
+}
+
+variable "chromadb_namespace" {
+  description = "Kubernetes namespace for ChromaDB"
+  type        = string
+  default     = "chromadb"
+}
+
+variable "chromadb_image" {
+  description = "ChromaDB container image"
+  type        = string
+  default     = "chromadb/chroma:latest"
+}
+
+variable "storage_size" {
+  description = "ChromaDB persistent storage"
+  type        = string
+  default     = "5Gi"
+}
+variable "postgresql_namespace" {
+
+  type    = string
+  default = "postgresql"
+}
+
+variable "postgresql_image" {
+
+  type    = string
+  default = "postgres:16"
+}
+
+variable "postgresql_storage_size" {
+
+  type    = string
+  default = "5Gi"
+}
+
+variable "postgresql_database" {
+
+  type    = string
+  default = "appdb"
+}
+
+variable "postgresql_username" {
+
+  type    = string
+  default = "appuser"
+}
+
+variable "postgresql_password" {
+
+  type      = string
+  sensitive = true
+}

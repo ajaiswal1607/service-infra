@@ -64,3 +64,32 @@ resource "aws_eks_node_group" "main" {
     aws_iam_role_policy_attachment.nodes_ecr
   ]
 }
+
+module "chromadb" {
+
+  source = "./modules/chromadb"
+
+  namespace = var.chromadb_namespace
+
+  image = var.chromadb_image
+
+  storage_size = var.storage_size
+}
+
+
+module "postgresql" {
+
+  source = "./modules/postgresql"
+
+  namespace = var.postgresql_namespace
+
+  image = var.postgresql_image
+
+  storage_size = var.postgresql_storage_size
+
+  database = var.postgresql_database
+
+  username = var.postgresql_username
+
+  password = var.postgresql_password
+}
