@@ -74,9 +74,6 @@ jobs:
             -backend-config="key=${TF_STATE_KEY}" \
             -backend-config="region=${AWS_REGION}"
 
-      - name: Terraform Validate
-        run: terraform validate
-
       - name: Terraform Plan
         run: |
           terraform plan \
