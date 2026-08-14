@@ -8,7 +8,7 @@ resource "kubernetes_namespace" "chromadb" {
 resource "kubernetes_persistent_volume_claim" "chromadb" {
 
   metadata {
-    name      = "chromadb-pvc"
+    name      = "chromadb-poc"
     namespace = kubernetes_namespace.chromadb.metadata[0].name
   }
 
