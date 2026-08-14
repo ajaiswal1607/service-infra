@@ -55,7 +55,7 @@ jobs:
       - name: Terraform Init - EKS
         working-directory: common/bootstrap-state
         run: |
-          terraform init
+          terraform init -reconfigure
 
       # ------------------------------------------
       # Configure kubectl
