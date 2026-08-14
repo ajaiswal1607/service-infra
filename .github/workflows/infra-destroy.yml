@@ -16,7 +16,7 @@ jobs:
   destroy:
     name: Destroy EKS Infrastructure
     runs-on: ubuntu-latest
-    
+
     environment:
       name: dev
 
@@ -48,9 +48,15 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-      
-      
-      
+
+      # ------------------------------------------
+      # Configure kubectl
+      # ------------------------------------------
+      - name: Terraform Init - EKS
+        working-directory: common/terraform
+        run: |
+          terraform init
+
       # ------------------------------------------
       # Configure kubectl
       # ------------------------------------------
@@ -64,7 +70,7 @@ jobs:
             --name "$CLUSTER_NAME"
 
           kubectl get nodes
-
+    
       # ------------------------------------------
       # Delete Kubernetes applications first
       # ------------------------------------------
@@ -80,11 +86,6 @@ jobs:
       # ------------------------------------------
       # Delete EKS infrastructure
       # ------------------------------------------
-      - name: Terraform Init - EKS
-        working-directory: common/terraform
-        run: |
-          terraform init
-
       - name: Terraform Destroy - EKS
         working-directory: common/terraform
         run: |
