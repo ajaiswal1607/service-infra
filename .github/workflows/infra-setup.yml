@@ -46,7 +46,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: infrastructure/terraform
+        working-directory: common/terraform
 
     steps:
 
