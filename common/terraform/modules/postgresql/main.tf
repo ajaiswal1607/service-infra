@@ -75,8 +75,7 @@ resource "kubernetes_deployment" "postgresql" {
 
     name = "postgresql"
 
-    namespace =
-    kubernetes_namespace.postgresql.metadata[0].name
+    namespace = kubernetes_namespace.postgresql.metadata[0].name
 
     labels = {
       app = "postgresql"
@@ -126,8 +125,7 @@ resource "kubernetes_deployment" "postgresql" {
 
               secret_key_ref {
 
-                name =
-                kubernetes_secret.postgresql.metadata[0].name
+                name = kubernetes_secret.postgresql.metadata[0].name
 
                 key = "POSTGRES_DB"
               }
@@ -142,8 +140,7 @@ resource "kubernetes_deployment" "postgresql" {
 
               secret_key_ref {
 
-                name =
-                kubernetes_secret.postgresql.metadata[0].name
+                name = kubernetes_secret.postgresql.metadata[0].name
 
                 key = "POSTGRES_USER"
               }
@@ -158,8 +155,7 @@ resource "kubernetes_deployment" "postgresql" {
 
               secret_key_ref {
 
-                name =
-                kubernetes_secret.postgresql.metadata[0].name
+                name = kubernetes_secret.postgresql.metadata[0].name
 
                 key = "POSTGRES_PASSWORD"
               }
@@ -229,8 +225,7 @@ resource "kubernetes_deployment" "postgresql" {
 
           persistent_volume_claim {
 
-            claim_name =
-            kubernetes_persistent_volume_claim.postgresql.metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim.postgresql.metadata[0].name
           }
         }
       }
@@ -244,8 +239,7 @@ resource "kubernetes_service" "postgresql" {
 
     name = "postgresql"
 
-    namespace =
-    kubernetes_namespace.postgresql.metadata[0].name
+    namespace = kubernetes_namespace.postgresql.metadata[0].name
   }
 
   spec {
