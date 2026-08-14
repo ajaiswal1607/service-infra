@@ -21,29 +21,6 @@ resource "kubernetes_secret" "postgresql" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "postgresql" {
-
-  metadata {
-    name      = "postgresql-pvc"
-    namespace = kubernetes_namespace.postgresql.metadata[0].name
-  }
-
-  spec {
-
-    access_modes = [
-      "ReadWriteOnce"
-    ]
-
-    storage_class_name = "gp3"
-
-    resources {
-
-      requests = {
-        storage = var.storage_size
-      }
-    }
-  }
-}
 
 resource "kubernetes_persistent_volume_claim" "postgresql" {
 
