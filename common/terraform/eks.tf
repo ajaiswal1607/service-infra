@@ -71,7 +71,6 @@ module "chromadb" {
   namespace = var.chromadb_namespace
   image = var.chromadb_image
   storage_size = var.storage_size
-  eks_cluster_name = aws_eks_cluster.main.name
   depends_on = [
     aws_eks_cluster.main
   ]
@@ -86,7 +85,6 @@ module "postgresql" {
   database = var.postgresql_database
   username = var.postgresql_username
   password = var.postgresql_password
-  eks_cluster_name = aws_eks_cluster.main.name
   depends_on = [
     aws_eks_cluster.main
   ]
